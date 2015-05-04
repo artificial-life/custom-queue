@@ -1,0 +1,22 @@
+{
+  "name": "pubsub-bench",
+  "version": "1.0.0",
+  "description": "ee & pubsub benchmark",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bench"
+  ],
+  "author": "SS",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.9.25",
+    "eventemitter2": "^0.4.14",
+    "eventemitter3": "^1.0.1",
+    "lodash": "^3.8.0",
+    "node-uuid": "^1.4.3",
+    "postal": "^1.0.2"
+  }
+}
