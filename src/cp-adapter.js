@@ -1,22 +1,39 @@
 var _ = require('lodash');
 
+var sendFn = function (event_name, child_process) {
+    var id = 'adapter-' + child_process.pid;
+    return function (data) {
+        if (id === data._emitter) return;
+        child_process.send({
+            type: 'adapter.event_transport',
+            body: {
+                event: event_name,
+                data: data
+            }
+        });
+    };
+}
+
 var ParentToChildAdapter = function (child_process) {
-    this.emitter = null;
+    this.queue = null;
     this.events = ['app.system'];
     this.child_process = child_process;
+    this.id = 'adapter-' + child_process.pid;
     var self = this;
+
     child_process.on('message', function (message) {
         switch (message.type) {
         case 'adapter.system':
+            console.log('subs on', message.body.event, process.pid);
             if (self.events.indexOf(message.body.event) !== -1) break;
             self.events.push(message.body.event);
-
-            //            if (!self.emitter) break;
-            //                self.emitter.notifyAdapters(
+            var send = sendFn(message.body.event, self.child_process);
+            self.queue.on(message.body.event, send, true);
             break;
         case 'adapter.event_transport':
-            if (!self.emitter) break;
-            self.emitter.fanout(message.body.event, message.body.data, self);
+            if (!self.queue) break;
+            message.body.data._emitter = self.id;
+            self.queue.emit(message.body.event, message.body.data);
             break;
         }
 
@@ -24,11 +41,12 @@ var ParentToChildAdapter = function (child_process) {
 };
 
 
-ParentToChildAdapter.prototype.setEmitter = function (emitter) {
-    this.emitter = emitter;
+ParentToChildAdapter.prototype.setEmitter = function (queue) {
+    this.queue = queue;
 };
 
 ParentToChildAdapter.prototype.linkEvent = function (event_name) {
+    console.log('linking', event_name, process.pid);
     this.child_process.send({
         type: 'adapter.system',
         body: {
@@ -38,16 +56,6 @@ ParentToChildAdapter.prototype.linkEvent = function (event_name) {
     });
 };
 
-ParentToChildAdapter.prototype.emit = function (event_name, data) {
-    if (this.events.indexOf(event_name) === -1) return;
 
-    this.child_process.send({
-        type: 'adapter.event_transport',
-        body: {
-            event: event_name,
-            data: data
-        }
-    });
-};
 
 module.exports = ParentToChildAdapter;

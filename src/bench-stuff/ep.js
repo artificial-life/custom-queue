@@ -24,7 +24,7 @@ if (!1) {
     });
     for (var i = 0; i < count; i += 1) {
         channel.publish("item.add", {
-            data: (new Date()).getTime()
+            data: 1
         });
     }
 
