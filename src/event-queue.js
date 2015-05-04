@@ -3,11 +3,16 @@ var Queue = function (name, options) {
     var local_subs = {};
     var adapters = [];
     return {
-        on: function (event_name, cb, im_adapter) {
+        _on: function (event_name, cb) {
             if (!local_subs.hasOwnProperty(event_name)) local_subs[event_name] = [];
             local_subs[event_name].push(cb);
-            if (!im_adapter)
-                this.notifyAdapters(event_name);
+        },
+        on: function (event_name, cb) {
+            this._on(event_name, cb);
+            var i;
+            for (i = 0; i < adapters.length; i += 1) {
+                adapters[i].linkEvent(event_name);
+            }
         },
         emit: function (event_name, data) {
             var subs = local_subs[event_name];
@@ -17,11 +22,6 @@ var Queue = function (name, options) {
 
             for (i = 0; i < len; i += 1) {
                 subs[i].call(null, data);
-            }
-        },
-        notifyAdapters: function (event_name) {
-            for (var i = 0; i < adapters.length; i += 1) {
-                adapters[i].linkEvent(event_name);
             }
         },
         addAdapter: function (adapter) {
