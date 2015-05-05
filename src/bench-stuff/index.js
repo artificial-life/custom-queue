@@ -1,35 +1,49 @@
-var Benchmark = require('benchmark');
+var len = 250;
+var keys = [];
+var hash = {};
+var values = [];
+for (var i = 0; i < len; i += 1) {
+    keys.push('k' + (i));
+}
+console.log(keys);
+for (var k in keys) {
+    var key = keys[k];
+    hash[key] = [];
+    for (var i = 1; i < 10; i++) {
+        var temp = parseInt(Math.random() * 100);
+        hash[key].push(temp);
+    }
+    values.push(hash[key]);
+}
 
-var postal = require('postal');
-var ee2 = require('eventemitter2').EventEmitter2;
+var findH = function (id) {
+    return hash[id];
+}
 
-var e2 = new ee2();
-var suite = new Benchmark.Suite;
+var findA = function (id) {
+    var i = keys.indexOf(id);
+    return values[i];
+}
+var count = 1000000;
 
+for (var i = 0; i < count * 10; i += 1) {
+    var item = parseInt(Math.random() * len);
+    var r1 = findA('k' + item);
+    var r2 = findH('k' + item);
+}
 
-var channel = postal.channel("orders");
-var counter = 0;
-var subscription = channel.subscribe("item.add", function (data, envelope) {
-    //console.log(data);
-    counter += 1;
-    console.log(counter);
-});
+var s = process.hrtime();
 
-var i = 0;
-var j = 0;
-suite
-    .add('postal', function () {
-        i++;
-        console.log(i);
-    })
-    .add('eventemitter', function () {
-        j += 1;
-        console.log(j);
-    })
-    .on('complete', function () {
-        console.log('Fastest is ' + this.filter('fastest').pluck('name'));
-    })
-    // run async
-    .run({
-        'async': true
-    });
+for (var i = 0; i < count; i += 1) {
+    var item = parseInt(Math.random() * len);
+    var r = findH('k' + item);
+}
+console.log(process.hrtime(s));
+
+s = process.hrtime();
+
+for (var i = 0; i < count; i += 1) {
+    var item = parseInt(Math.random() * len);
+    var r = findA('k' + item);
+}
+console.log(process.hrtime(s));
