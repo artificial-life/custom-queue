@@ -1,5 +1,4 @@
 var Queue = function (name, options) {
-    var transport = ['kafka', 'inner', 'cross-porcess'];
     var local_subs = {};
     var adapters = [];
     return {

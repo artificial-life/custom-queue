@@ -1,14 +1,29 @@
 var Benchmark = require('benchmark');
 var suite = new Benchmark.Suite;
 
-var len = 4;
+var len = 10;
 var keys = [];
 var hash = {};
 var values = [];
+
+var workers = {};
+var w_len = {};
+var workers2 = {};
+
 for (var i = 0; i < len; i += 1) {
     keys.push('k' + (i));
+    workers['w' + i] = [1, 2, 3, 4, 5];
+    workers2['w' + i] = {
+        len: 0,
+        w: [1, 2, 3, 4, 5]
+    };
+    for (var j = 0; j < parseInt(Math.random() * 10 + 1); j += 1) {
+        workers['w' + i].push(j);
+        workers2['w' + i].w.push(parseInt(Math.random() * 10 + 1));
+    }
+    workers2['w' + i].len = workers2['w' + i].w.length;
+    w_len['w' + i] = workers['w' + i].length;
 }
-console.log(keys);
 for (var k in keys) {
     var key = keys[k];
     hash[key] = [];
@@ -32,21 +47,23 @@ var findI = function (id) {
     return values[id];
 }
 
-
+console.log(workers2);
 
 // add tests
-suite.add('findH', function () {
-        var item = parseInt(Math.random() * len);
-        var r = findH('k' + item);
+suite.add('1', function () {
+        var worker_name = 'w' + parseInt(Math.random() * len);
+        var worker = workers[worker_name];
+        var len = w_len[worker_name];
     })
-    .add('findA', function () {
-        var item = parseInt(Math.random() * len);
-        var r = findA('k' + item);
-
+    .add('2', function () {
+        var item = 'w' + parseInt(Math.random() * len);
+        var worker2 = workers2[item].w;
+        var len2 = workers2[item].len;
     })
-    .add('findI', function () {
-        var item = parseInt(Math.random() * len);
-        var r = findI(item);
+    .add('3', function () {
+        var item2 = 'w' + parseInt(Math.random() * len);
+        var worker3 = workers[item2];
+        var len3 = worker3.length;
     })
     .on('cycle', function (event) {
         console.log(String(event.target));
@@ -55,5 +72,5 @@ suite.add('findH', function () {
         console.log('Fastest is ' + this.filter('fastest').pluck('name'));
     })
     .run({
-        'async': false
+        'async': true
     });

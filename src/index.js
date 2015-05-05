@@ -14,6 +14,6 @@ setTimeout(function () {
     });
 }, 2000);
 
-q.on('ready', function () {
-    console.log('child is ready');
+q.on('other', function (data) {
+    console.log('other event', data);
 });
