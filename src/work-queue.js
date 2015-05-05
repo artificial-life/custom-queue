@@ -26,6 +26,11 @@ var Queue = function (name, options) {
         },
         on: function (event_name, cb) {
             this._on(event_name, cb);
+
+            var i;
+            for (i = 0; i < adapters.length; i += 1) {
+                adapters[i].workerArrived(event_name);
+            }
         },
         emit: function (event_name, data) {
             var wrks = workers[event_name];
