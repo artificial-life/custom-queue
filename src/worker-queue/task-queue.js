@@ -34,10 +34,11 @@ var Queue = function (name, options) {
         },
         emit: function (event_name, data) {
             var wrks = workers[event_name];
-            if (!wrks) return;
+            if (!wrks) return Promise.reject('no_workers');
             var len = wrks.items.length;
             var p = wrks.items[wrks.cursor].call(null, data);
             wrks.cursor = (wrks.cursor + 1) % len;
+
             return Promise.resolve(p);
         },
         addAdapter: function (adapter) {

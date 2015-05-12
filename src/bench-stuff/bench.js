@@ -63,7 +63,7 @@ suite.add('1', function () {
     .add('3', function () {
         var item2 = 'w' + parseInt(Math.random() * len);
         var worker3 = workers[item2];
-        var len3 = worker3.length;
+        var len3 = workers[item2].length;
     })
     .on('cycle', function (event) {
         console.log(String(event.target));
