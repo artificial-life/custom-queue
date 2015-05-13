@@ -1,3 +1,5 @@
+console.log('main', process.pid);
+
 var child_process = require('child_process');
 var Adapter = require('./cp-adapter.js');
 var Eventq = require('./event-queue.js');
@@ -8,12 +10,9 @@ var child = child_process.fork('./test.js');
 var adapter = new Adapter(child);
 q.addAdapter(adapter);
 
-setTimeout(function () {
+q.on('system', function (data) {
+    console.log('sytem event', data);
     q.on('some-event', function (data) {
         console.log('%s received', process.pid, data);
     });
-}, 2000);
-
-q.on('other', function (data) {
-    console.log('other event', data);
 });

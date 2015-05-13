@@ -10,7 +10,7 @@ var Queue = function (name, options) {
             this._on(event_name, cb);
             var i;
             for (i = 0; i < adapters.length; i += 1) {
-                adapters[i].linkEvent(event_name);
+                adapters[i].sendLinkRequest(event_name);
             }
         },
         emit: function (event_name, data) {

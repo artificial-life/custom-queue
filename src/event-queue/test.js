@@ -1,8 +1,11 @@
+console.log('child', process.pid);
+
 var Adapter = require('./cp-adapter.js');
 var Eventq = require('./event-queue.js');
 
 var q = new Eventq();
 var adapter = new Adapter(process);
+
 q.addAdapter(adapter);
 var counter = 0;
 
@@ -17,6 +20,6 @@ setInterval(function () {
     }
 }, 1000);
 
-q.on('some-event', function (data) {
-    console.log('%s emitted:', process.pid, data);
+q.emit('system', {
+    state: 'ready'
 });

@@ -14,20 +14,25 @@
 
   var ParentToChildAdapter = function (child_process) {
       this.queue = null;
-      this.events = [];
+      var events = [];
       this.child_process = child_process;
       this.id = 'adapter-' + process.pid;
       var self = this;
 
+      this.linkExt = function (event) {
+          if (events.indexOf(event) !== -1) return;
+
+          events.push(event);
+          var send = sendFn(event, child_process);
+          self.queue._on(event, send);
+      };
+
+
+
       child_process.on('message', function (message) {
           switch (message.type) {
           case 'adapter.linkevent':
-              if (self.events.indexOf(message.body.event) !== -1) break;
-
-              self.events.push(message.body.event);
-              var send = sendFn(message.body.event, self.child_process);
-              self.queue._on(message.body.event, send);
-
+              self.linkExt(message.body.event);
               break;
           case 'adapter.event_transport':
               if (!self.queue) break;
@@ -44,10 +49,11 @@
 
   ParentToChildAdapter.prototype.setEmitter = function (queue) {
       this.queue = queue;
+      this.linkExt('system');
   };
 
 
-  ParentToChildAdapter.prototype.linkEvent = function (event_name) {
+  ParentToChildAdapter.prototype.sendLinkRequest = function (event_name) {
       this.child_process.send({
           type: 'adapter.linkevent',
           body: {
