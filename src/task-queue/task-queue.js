@@ -1,18 +1,9 @@
+'use strict'
+
 var Promise = require('bluebird');
 var uuid = require('node-uuid');
 
-//var defer = function () {
-//    var resolve, reject;
-//    var promise = new Promise(function (res, rej) {
-//        resolve = res;
-//        reject = rej;
-//    });
-//    return {
-//        resolve: resolve,
-//        reject: reject,
-//        promise: promise
-//    }
-//}
+
 var Queue = function (name, options) {
     var workers = {};
     var adapters = [];
@@ -43,7 +34,7 @@ var Queue = function (name, options) {
         },
         addAdapter: function (adapter) {
             adapters.push(adapter);
-            adapter.setEmitter(this);
+            adapter.attach(this);
         }
     }
 };

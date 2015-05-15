@@ -1,7 +1,7 @@
 console.log('parent', process.pid);
 var child_process = require('child_process');
 
-var Adapter = require('./wcp-adapter.js');
+var Adapter = require('./adapters/ipc.js');
 var Taskq = require('./task-queue.js');
 
 var q = new Taskq();

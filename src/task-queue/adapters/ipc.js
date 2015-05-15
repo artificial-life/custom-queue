@@ -1,3 +1,5 @@
+'use strict'
+
 var uuid = require('node-uuid');
 var Promise = require('bluebird');
 var _ = require('lodash');
@@ -79,7 +81,7 @@ var ParentToChildAdapter = function (child_process) {
 };
 
 
-ParentToChildAdapter.prototype.setEmitter = function (queue) {
+ParentToChildAdapter.prototype.attach = function (queue) {
     this.queue = queue;
 };
 

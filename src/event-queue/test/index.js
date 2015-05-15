@@ -1,7 +1,7 @@
 console.log('main', process.pid);
 
 var child_process = require('child_process');
-var Adapter = require('./cp-adapter.js');
+var Adapter = require('./adapters/ipc.js');
 var Eventq = require('./event-queue.js');
 
 var q = new Eventq();

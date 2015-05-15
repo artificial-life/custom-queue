@@ -1,3 +1,5 @@
+'use strict'
+
 var Queue = function (name, options) {
     var local_subs = {};
     var adapters = [];
@@ -5,6 +7,7 @@ var Queue = function (name, options) {
         _on: function (event_name, cb) {
             if (!local_subs.hasOwnProperty(event_name)) local_subs[event_name] = [];
             local_subs[event_name].push(cb);
+            // console.log(process.pid, ':', local_subs);
         },
         on: function (event_name, cb) {
             this._on(event_name, cb);
@@ -25,7 +28,7 @@ var Queue = function (name, options) {
         },
         addAdapter: function (adapter) {
             adapters.push(adapter);
-            adapter.setEmitter(this);
+            adapter.attach(this);
         }
     }
 };
