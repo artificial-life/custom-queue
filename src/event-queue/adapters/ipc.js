@@ -14,7 +14,7 @@ var sendFn = function (event_name, child_process) {
     }
 };
 
-var ParentToChildAdapter = function (child_process) {
+var EventAdapter = function (child_process) {
     this.queue = null;
     var events = [];
     this.child_process = child_process;
@@ -45,13 +45,13 @@ var ParentToChildAdapter = function (child_process) {
 };
 
 
-ParentToChildAdapter.prototype.attach = function (queue) {
+EventAdapter.prototype.attach = function (queue) {
     this.queue = queue;
-    this.linkExt('system');
+    this.linkExt('system.child_process.' + this.child_process.pid);
 };
 
 
-ParentToChildAdapter.prototype.sendLinkRequest = function (event_name) {
+EventAdapter.prototype.sendLinkRequest = function (event_name) {
     this.child_process.send({
         type: 'adapter.linkevent',
         body: {
@@ -63,4 +63,4 @@ ParentToChildAdapter.prototype.sendLinkRequest = function (event_name) {
 
 
 
-module.exports = ParentToChildAdapter;
+module.exports = EventAdapter;
