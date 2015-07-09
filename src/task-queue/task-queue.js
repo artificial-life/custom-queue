@@ -35,6 +35,10 @@ var Queue = function (name, options) {
         addAdapter: function (adapter) {
             adapters.push(adapter);
             adapter.attach(this);
+
+            for (var event_name in workers) {
+                adapter.workerArrived(event_name);
+            }
         }
     }
 };
