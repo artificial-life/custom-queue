@@ -50,7 +50,7 @@ gulp.task("json", function() {
 });
 
 gulp.task('es6', ['es6-js', 'json']);
-gulp.task('build', ['es6-js', 'json']);
+
 
 gulp.task('test', ['start-test'], function() {
   gulp.watch(["src/**/*.js", "tests/**/*.js"], ['es6']);
