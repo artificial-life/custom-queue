@@ -4,8 +4,7 @@
   "description": "event and task queue",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "gulp --gulpfile build.js "
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "bench"
