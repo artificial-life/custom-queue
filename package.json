@@ -11,7 +11,7 @@
 		"bench"
 	],
 	"babel": {
-		"presets": ["node5"],
+		"presets": ["es2015-node5"],
 		"babelrc": false
 	},
 	"author": "SS",
