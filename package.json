@@ -26,8 +26,8 @@
     "gulp": "^3.9.1"
   },
   "devDependencies": {
-    "babel-preset-es2015-node5": "^1.1.2",
-    "babel-preset-node5": "^10.8.0",
+    "babel-preset-es2015-node5": "^1.2.0",
+    "babel-preset-node5": "^11.0.1",
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
