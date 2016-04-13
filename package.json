@@ -19,8 +19,8 @@
   "author": "SS",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.3.4",
-    "lodash": "^4.9.0",
+    "bluebird": "^3.3.5",
+    "lodash": "^4.10.0",
     "node-uuid": "^1.4.7",
     "gulp-babel": "^6.1.2",
     "gulp": "^3.9.1"
