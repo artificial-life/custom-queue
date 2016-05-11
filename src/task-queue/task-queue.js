@@ -6,26 +6,22 @@ var uuid = require('node-uuid');
 
 var Queue = function (name, options) {
 	var workers = {};
-	var adapters = [];
+	var outer_adapter = false;
 	return {
-		_on: function (event_name, cb) {
+		on: function (event_name, cb) {
 			if (!workers.hasOwnProperty(event_name)) workers[event_name] = {
 				items: [],
 				cursor: 0
 			};
 			workers[event_name].items.push(cb);
-		},
-		on: function (event_name, cb) {
-			this._on(event_name, cb);
 
-			var i;
-			for (i = 0; i < adapters.length; i += 1) {
-				adapters[i].workerArrived(event_name);
-			}
+			if (outer_adapter) outer_adapter.listenTask(event_name, cb)
 		},
 		emit: function (event_name, data) {
 			var wrks = workers[event_name];
-			if (!wrks) return Promise.reject(new Error("No workers for " + event_name));
+
+			if (!wrks) return !outer_adapter ? Promise.reject(new Error("No workers for " + event_name)) : outer_adapter.addTask(event_name, data);
+
 			var len = wrks.items.length;
 			var p = wrks.items[wrks.cursor].call(null, data);
 			wrks.cursor = (wrks.cursor + 1) % len;
@@ -33,12 +29,7 @@ var Queue = function (name, options) {
 			return Promise.resolve(p);
 		},
 		addAdapter: function (adapter) {
-			adapters.push(adapter);
-			adapter.attach(this);
-
-			for (var event_name in workers) {
-				adapter.workerArrived(event_name);
-			}
+			outer_adapter = adapter;
 		}
 	}
 };
