@@ -19,15 +19,15 @@
   "author": "SS",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.3.5",
-    "lodash": "^4.11.1",
+    "bluebird": "^3.4.0",
+    "lodash": "^4.13.1",
     "node-uuid": "^1.4.7",
     "gulp-babel": "^6.1.2",
     "gulp": "^3.9.1"
   },
   "devDependencies": {
     "babel-preset-es2015-node5": "^1.2.0",
-    "babel-preset-node5": "^11.0.2",
+    "babel-preset-node5": "^11.1.0",
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
@@ -36,9 +36,9 @@
     "gulp-develop-server": "^0.5.1",
     "gulp-livereload": "^3.8.1",
     "gulp-mocha": "^2.2.0",
-    "gulp-nodemon": "^2.0.6",
+    "gulp-nodemon": "^2.0.7",
     "gulp-plumber": "^1.1.0",
     "gulp-sourcemaps": "^2.0.0-alpha",
-    "gulp-watch": "^4.3.5"
+    "gulp-watch": "^4.3.6"
   }
 }
