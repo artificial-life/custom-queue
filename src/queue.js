@@ -17,6 +17,9 @@ class Queue {
 	addTask(task_name, data) {
 		return this.task_q.emit(task_name, data);
 	}
+	command(task_name, data) {
+		return this.task_q.command(task_name, data);
+	}
 	listenTask(task_name, cb) {
 		return this.task_q.on(task_name, cb);
 	}
