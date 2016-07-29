@@ -17,7 +17,11 @@ var Queue = function (name, options) {
 
 			if (outer_adapter) outer_adapter.listenTask(event_name, cb)
 		},
-		emit: function (event_name, data) {
+		emit: function (event, data) {
+			let event_name = _.isString(event) ? event : event.event_name;
+
+			if (event.force_out) return outer_adapter.addTask(event_name, data);
+
 			let d = this.perform(event_name, data);
 
 			if (!_.isError(d)) return Promise.resolve(d);
