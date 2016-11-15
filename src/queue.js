@@ -24,8 +24,13 @@ class Queue {
 		return this.task_q.on(task_name, cb);
 	}
 	addAdapter(type, adapter) {
-		if (type == 'task') return this.task_q.addAdapter(adapter);
-		if (type == 'event') return this.event_q.addAdapter(adapter);
+		if (!adapter) {
+			this.addAdapter('event', type);
+			this.addAdapter('task', type);
+			return;
+		}
+
+		this[`${type}_q`].addAdapter(adapter);
 	}
 }
 

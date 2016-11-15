@@ -9,7 +9,7 @@ var Queue = function (name, options) {
 	var outer_adapter = false;
 	return {
 		on: function (event_name, cb) {
-			if (!workers.hasOwnProperty(event_name)) workers[event_name] = {
+			if (!workers.event_name) workers[event_name] = {
 				items: [],
 				cursor: 0
 			};

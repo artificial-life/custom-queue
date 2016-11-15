@@ -21,11 +21,10 @@ var Queue = function (name, options) {
 		_emit: function (event_name, data) {
 			let subs = local_subs[event_name];
 			if (!subs) return;
-			let i;
 			let len = subs.length;
 
-			for (i = 0; i < len; i += 1) {
-				subs[i].call(null, data);
+			while (len--) {
+				subs[len].call(null, data);
 			}
 		},
 		addAdapter: function (pubsub) {
