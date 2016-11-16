@@ -1,28 +1,35 @@
 'use strict'
 
-let Promise = require('bluebird');
-let uuid = require('node-uuid');
-let _ = require('lodash');
+const Promise = require('bluebird');
 
-var Queue = function (name, options) {
-	var workers = {};
-	var outer_adapter = false;
+const Queue = function (name, options) {
+	let workers = {};
+	let outer_adapter = false;
+	let route = {
+		act: [],
+		do: []
+	};
+
+
 	return {
-		on: function (event_name, cb) {
-			if (!workers.event_name) workers[event_name] = {
+		act(event_name, cb) {
+			let real_name = this.applyRoutes('act', event_name);
+
+			if (!workers.real_name) workers[real_name] = {
 				items: [],
 				cursor: 0
 			};
-			workers[event_name].items.push(cb);
+			workers[real_name].items.push(cb);
 
-			if (outer_adapter) outer_adapter.listenTask(event_name, cb)
+			if (outer_adapter) outer_adapter.act(real_name, cb)
 		},
-		emit: function (event_name, data) {
-			let d = this.perform(event_name, data);
+		do(event_name, data) {
+			let real_name = this.applyRoutes('do', event_name, data);
+			let d = this.perform(real_name, data);
 
-			if (!_.isError(d)) return Promise.resolve(d);
+			if (!d || d.constructor != Error) return Promise.resolve(d);
 
-			return !outer_adapter ? Promise.reject(d) : outer_adapter.addTask(event_name, data);
+			return !outer_adapter ? Promise.reject(d) : outer_adapter.do(real_name, data);
 		},
 		perform(event_name, data) {
 			var wrks = workers[event_name];
@@ -35,15 +42,30 @@ var Queue = function (name, options) {
 
 			return p;
 		},
-		command: function (event_name, data) {
-			let d = this.perform(event_name, data);
-
-			if (!_.isError(d)) return true;
-
-			return !outer_adapter ? Promise.reject(d) : outer_adapter.command(event_name, data);
+		command(event_name, data) {
+			return this.do(event_name, data).then(result => true)
 		},
-		addAdapter: function (adapter) {
+		addAdapter(adapter) {
 			outer_adapter = adapter;
+		},
+		addRouter(router) {
+			this.parseRouter('act', router);
+			this.parseRouter('do', router);
+		},
+		parseRouter(method, router) {
+			var fn = router[method];
+			(fn instanceof Function) && route[method].push(fn.bind(router));
+		},
+		applyRoutes(method, event_name, data) {
+			let routers = route[method];
+			let len = routers.length;
+			let real = event_name;
+
+			while (len--) {
+				real = routers[len](real, data)
+			}
+
+			return real;
 		}
 	}
 };
