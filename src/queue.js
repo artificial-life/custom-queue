@@ -2,8 +2,8 @@
 
 const _ = require('lodash');
 
-const Taskq = require('./task-queue/task-queue.js');
-const Eventq = require('./event-queue/event-queue.js');
+const Taskq = require('./queues/task-queue.js');
+const Eventq = require('./queues/event-queue.js');
 const ALL_QUEUES = ['event', 'task'];
 
 class Queue {
