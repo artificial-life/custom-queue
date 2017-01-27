@@ -13,36 +13,22 @@ const test = new TestQueue();
 const ee = new EE2();
 const eclassic = new EventEmitter();
 
-queue.on('counter', x => x.resolve());
-test.on('counter', x => x.resolve());
-ee.on('counter', x => x.resolve());
-eclassic.on('counter', x => x.resolve());
+queue.on('counter', x => 1 == 1);
+ee.on('counter', x => 1 == 1)
 
 suite.add('wrapped queue', {
-    defer: true,
-    fn: function(defered) {
-      queue.emit('counter', defered);
+    fn: function() {
+      queue.emit('counter', 'data');
+    }
+  })
 
-    }
-  })
-  .add('raw event queue', {
-    defer: true,
-    fn: function(defered) {
-      test.emit('counter', defered);
-    }
-  })
   .add('ee2', {
-    defer: true,
-    fn: function(defered) {
-      ee.emit('counter', defered);
+
+    fn: function() {
+      ee.emit('counter', 'data');
     }
   })
-  .add('ee classic', {
-    defer: true,
-    fn: function(defered) {
-      eclassic.emit('counter', defered);
-    }
-  })
+
   // add listeners
   .on('cycle', function(event) {
     console.log(String(event.target));
