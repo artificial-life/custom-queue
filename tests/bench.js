@@ -1,56 +1,36 @@
 'use strict';
 
-const Benchmark = require('benchmark');
+var Benchmark = require('benchmark');
 
-const suite = new Benchmark.Suite;
-const Queue = require('../src/queue.js');
-const TestQueue = require('../src/queues/event-queue.js');
-const EE2 = require('eventemitter2').EventEmitter2;
-const EventEmitter = require('events');
+var suite = new Benchmark.Suite;
+let Queue = require('../src/queue.js');
+let TestQueue = require('../src/queues/event-queue.js');
 // add tests
-const queue = new Queue();
-const test = new TestQueue();
-const ee = new EE2();
-const eclassic = new EventEmitter();
+let queue = new Queue();
+let test = new TestQueue();
+let c = 0;
 
-queue.on('counter', x => x.resolve());
-test.on('counter', x => x.resolve());
-ee.on('counter', x => x.resolve());
-eclassic.on('counter', x => x.resolve());
+queue.on('counter', x => c++);
+test.on('counter', x => c++);
 
-suite.add('wrapped queue', {
-    defer: true,
-    fn: function(defered) {
-      queue.emit('counter', defered);
-
-    }
-  })
-  .add('raw event queue', {
-    defer: true,
-    fn: function(defered) {
-      test.emit('counter', defered);
-    }
-  })
-  .add('ee2', {
-    defer: true,
-    fn: function(defered) {
-      ee.emit('counter', defered);
-    }
-  })
-  .add('ee classic', {
-    defer: true,
-    fn: function(defered) {
-      eclassic.emit('counter', defered);
-    }
-  })
-  // add listeners
-  .on('cycle', function(event) {
-    console.log(String(event.target));
-  })
-  .on('complete', function() {
-    console.log('Fastest is ' + this.filter('fastest').map('name'));
-  })
-  // run async
-  .run({
-    'async': !0
-  });
+suite.add('pubsub', function () {
+		queue.emit('counter', {
+			x: 'test'
+		});
+	})
+	.add('pubsub test', function () {
+		test.emit('counter', {
+			x: 'test'
+		});
+	})
+	// add listeners
+	.on('cycle', function (event) {
+		console.log(String(event.target));
+	})
+	.on('complete', function () {
+		console.log('Fastest is ' + this.filter('fastest').map('name'));
+	})
+	// run async
+	.run({
+		'async': true
+	});
